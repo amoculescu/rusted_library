@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites />
+<testsuites>
+  <testsuite id="0" name="cargo test #0" package="testsuite/cargo test #0" tests="1" errors="0" failures="0" hostname="localhost" timestamp="2025-01-13T23:21:29.770842658Z" time="0.000000751">
+    <testcase name="it_works" time="0.000000751" classname="tests" />
+  </testsuite>
+  <testsuite id="1" name="cargo test #1" package="testsuite/cargo test #1" tests="0" errors="0" failures="0" hostname="localhost" timestamp="2025-01-13T23:21:29.770842658Z" time="0" />
+</testsuites>
