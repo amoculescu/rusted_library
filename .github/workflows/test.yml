@@ -28,11 +28,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: prepare
-        run: rustup update nightly && rustup default nightly && mkdir reports
+        run: rustup update nightly && rustup default nightly && cargo install --root backend cargo2junit && mkdir reports
 
       - name: Test
         working-directory: ${{github.workspace}}
-        run: cargo test -- -Z unstable-options --format json --report-time | bin/cargo2junit > 'reports/report.xml'
+        run: cargo test -- --lib -Z unstable-options --format json --report-time | bin/cargo2junit > 'reports/report.xml'
 
       - name: coverage
         working-directory: ${{github.workspace}}
