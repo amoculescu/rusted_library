@@ -36,7 +36,7 @@ jobs:
 
       - name: coverage
         working-directory: ${{github.workspace}}
-        run: cargo tarpaulin --engine llvm --out xml html --output-dir reports && mv reports/tarpaulin-report.html reports/index.hmtl
+        run: cargo tarpaulin --engine llvm --out xml html --output-dir reports && mv reports/tarpaulin-report.html reports/index.html
 
       - name: Test Report
         uses: mikepenz/action-junit-report@v5
