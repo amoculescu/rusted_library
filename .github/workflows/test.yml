@@ -69,7 +69,7 @@ jobs:
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
           badge: true
-          filename: ${{github.workspace}}/reports/cobertura.xml
+          filename: reports/cobertura.xml
           fail_below_min: true
           format: markdown
           hide_branch_rate: false
@@ -77,3 +77,8 @@ jobs:
           indicators: false
           output: both
           thresholds: '75 90'
+
+      - name: Code Coverage
+        if: success() || failure()
+        working-directory: ${{github.workspace}}
+        run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
