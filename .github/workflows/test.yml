@@ -27,18 +27,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: prepare
+        run: rustup update nightly && rustup default nightly && mkdir reports
 
       - name: Test
         working-directory: ${{github.workspace}}
-        run: cargo test -- -Z unstable-options --format json --report-time | bin/cargo2junit > report.xml
+        run: cargo test -- -Z unstable-options --format json --report-time | bin/cargo2junit > 'reports/report.xml
+
       - name: coverage
         working-directory: ${{github.workspace}}
-        run: cargo tarpaulin --engine llvm --out xml
+        run: cargo tarpaulin --engine llvm --out xml --output-dir reports && mv reports/tarpaulin-report.html reports/index.hmtl
+
       - name: Test Report
         uses: mikepenz/action-junit-report@v5
         if: (success() || failure())
         with:
-          report_paths: '${{github.workspace}}/report.xml'
+          report_paths: 'reports/report.xml'
           comment: true
           updateComment: true
           include_passed: true
@@ -48,10 +52,10 @@ jobs:
         if: (success() || failure()) && github.ref == 'refs/heads/master'
         uses: cjlapao/simple-badge-generator-action@v1
         with:
-          badge-path: '${{github.workspace}}/cov-report/coverage.svg'
+          badge-path: '${{github.workspace}}/reports/coverage.svg'
           badge-type: 'cobertura'
           title: 'Coverage'
-          cobertura-path: '${{github.workspace}}cobertura-.xml'
+          cobertura-path: '${{github.workspace}}/reports/cobertura.xml'
           cobertura-color-yellow-threshold: 75
           cobertura-color-green-threshold: 90
 
@@ -59,13 +63,13 @@ jobs:
         if: (success() || failure()) && github.ref == 'refs/heads/master'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: cov-report
+          folder: ${{github.workspace}}/reports
 
       - name: Generate Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
           badge: true
-          filename: cov-report/cobertura-coverage.xml
+          filename: ${{github.workspace}}/reports/cobertura.xml
           fail_below_min: true
           format: markdown
           hide_branch_rate: false
@@ -73,8 +77,3 @@ jobs:
           indicators: false
           output: both
           thresholds: '75 90'
-
-      - name: Code Coverage
-        if: success() || failure()
-        working-directory: ${{github.workspace}}
-        run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
